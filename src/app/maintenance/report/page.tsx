@@ -1,0 +1,7 @@
+import PlaceholderPage from "@/components/ui/PlaceholderPage";
+
+export default function Page() {
+  return (
+    <PlaceholderPage title="แจ้งซ่อม" group="ซ่อมบำรุง" />
+  );
+}
