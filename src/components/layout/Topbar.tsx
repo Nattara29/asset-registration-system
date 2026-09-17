@@ -1,13 +1,30 @@
 "use client";
 
 import { Menu, ChevronDown, UserCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const fiscalYears = ["2569", "2568", "2567", "2566"];
 
 export default function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const [fiscalYear, setFiscalYear] = useState(fiscalYears[0]);
   const [yearMenuOpen, setYearMenuOpen] = useState(false);
+  const yearMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!yearMenuOpen) return;
+
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        yearMenuRef.current &&
+        !yearMenuRef.current.contains(event.target as Node)
+      ) {
+        setYearMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [yearMenuOpen]);
 
   return (
     <header className="flex h-16 items-center justify-between gap-4 border-b border-slate-200 bg-white px-4 sm:px-6">
@@ -23,7 +40,7 @@ export default function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4">
-        <div className="relative">
+        <div className="relative" ref={yearMenuRef}>
           <button
             type="button"
             onClick={() => setYearMenuOpen((v) => !v)}

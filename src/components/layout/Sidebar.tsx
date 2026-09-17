@@ -13,21 +13,13 @@ function isGroupActive(pathname: string, children?: { href: string }[]) {
 
 export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
-  const [openGroups, setOpenGroups] = useState<Set<string>>(() => {
+  const [openGroup, setOpenGroup] = useState<string | null>(() => {
     const initial = nav.find((g) => isGroupActive(pathname, g.children));
-    return new Set(initial ? [initial.label] : []);
+    return initial ? initial.label : null;
   });
 
   function toggleGroup(label: string) {
-    setOpenGroups((prev) => {
-      const next = new Set(prev);
-      if (next.has(label)) {
-        next.delete(label);
-      } else {
-        next.add(label);
-      }
-      return next;
-    });
+    setOpenGroup((prev) => (prev === label ? null : label));
   }
 
   return (
@@ -67,7 +59,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               );
             }
 
-            const open = openGroups.has(item.label);
+            const open = openGroup === item.label;
             const groupActive = isGroupActive(pathname, item.children);
 
             return (
